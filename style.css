@@ -1,0 +1,109 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: gradientBG 15s ease infinite;
+    background-image: url("/imagea.png"); 
+    overflow: hidden; 
+        
+    
+}
+.glass-container {
+    position: relative;
+    width: 350px;
+    padding: 20px;
+    height: 500px;
+    border: 1px solid #fff;
+    border-radius: 40px;
+    box-shadow: 20px;
+    backdrop-filter: blur(10px);
+}
+.glass-container h2 {
+    position: relative;
+    color: #fff;
+    text-align: center;
+    font-size: 30px;
+    letter-spacing: 1px;
+    margin-bottom: 50px;
+}
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+.input-group input{
+    position: relative;
+    width: 100%;
+    padding: 10px;
+    border-radius: 40px;
+    border: none;
+    font-size: 20px;
+}
+.input-group input:focus{
+    outline: none;
+}
+.input-group label{
+    color: #fff;
+    font-size: 16px;
+}
+.remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    align-items: center;
+    font-size: 16px;
+
+}
+.remember-forgot label{
+    color: #fff;
+    align-items: center;
+    cursor: pointer;
+}
+.remember-forgot a {
+    color: #fff;
+    transition: all 0.5s ;
+}
+.remember-forgot a:hover{
+    color: #f2b28d;
+}
+.remember-forgot input {
+    accent-color: #fff;
+}
+.Login-btn {
+    width: 80%;
+    text-align: center;
+    margin: 30px;
+    padding: 10px;
+    border-radius: 40px;
+    margin-bottom: 10px;
+    color: #fff;
+    background-color: rgb(255, 255, 255, 0.3);
+    font-size: 25px;
+    border: none;
+    font-weight: 50px;
+}
+.Login-btn:focus {
+    transition: all 1s ease-in-out;
+}
+.register-link {
+    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+.register-link p {
+    color: #fff;
+}
+.register-link a {
+    color: #fff;
+}
+.register-link a:hover{
+    color: #f2b28d;
+}

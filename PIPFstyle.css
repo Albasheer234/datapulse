@@ -1,0 +1,107 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial';
+}
+
+#logo-ctn {
+    display: flex;
+    gap: 5px;
+
+}
+
+#logo {
+    text-align: center;
+    width: 50px;
+    height: 50px;
+    border: 3px dotted;
+    border-radius: 50%;
+    margin-top: 10px;
+}
+
+#logo h3 {
+    margin-top: 12px;
+    text-align: center;
+    color: rgb(88, 174, 245);
+    font-weight: 900;
+
+}
+
+.logo-text {
+    border: 1px solid black;
+    margin: 0;
+    padding: 0;
+
+}
+#f {
+    display: block;
+    
+}
+#logo-ctn p {
+    color: solid;
+    font-weight: 900;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+#logo-ctn #f {
+    color: rgb(88, 174, 245);
+    font-weight: 900;
+    border: 1px solid black;
+}
+
+.info {
+    width: 100%;
+    margin-top: 20px;
+    padding: 0;
+    background-color: rgba(209, 245, 233, 0.4);
+    border: 1px solid gray;
+    box-sizing: border-box;
+    padding-bottom: 100px;
+    text-align: center;
+    border-bottom: none;
+
+
+
+}
+
+.info h1 {
+    font-size: 30px;
+    font-weight: 900;
+    color: solid;
+}
+
+.info h2 {
+    color: rgb(88, 174, 245);
+    font-weight: 900;
+    font-size: 30px;
+}
+
+.info p {
+    font-size: 20px;
+    font-weight: 300;
+    padding: 0 15px;
+}
+
+#apply button {
+    width: 95%;
+    padding: 13px;
+    background-color: rgb(88, 174, 245);
+    border-radius: 10px;
+    border: none;
+    font-size: 20px;
+    color: #fff;
+    font-weight: 300;
+}
+
+.info button {
+    width: 95%;
+    margin-top: 10px;
+    padding: 12px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    color: #000;
+    font-size: 20px;
+    font-weight: 300;
+    background-color: #fff;
+}
