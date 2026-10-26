@@ -58,6 +58,7 @@ import {
   Pie,
   Cell,
 } from "recharts";
+import { optimizeScreenshot } from "@/lib/image-optimizer";
 
 interface DashboardClientProps {
   user: {
@@ -407,6 +408,14 @@ export function DashboardClient({ user }: DashboardClientProps) {
     }
   };
 
+  // Check if file is an image (supports mobile Safari, Android HEIC/JPEG/PNG/etc)
+  const isImageFile = (file: File) => {
+    return (
+      file.type.startsWith("image/") ||
+      /\.(jpe?g|png|webp|heic|heif|bmp)$/i.test(file.name)
+    );
+  };
+
   // Handle Drop
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -414,15 +423,13 @@ export function DashboardClient({ user }: DashboardClientProps) {
     setDragActive(false);
     
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const files = Array.from(e.dataTransfer.files).filter(file => 
-        ["image/jpeg", "image/png", "image/webp"].includes(file.type)
-      );
+      const files = Array.from(e.dataTransfer.files).filter(isImageFile);
       if (files.length > 0) {
         setUploadFiles(prev => [...prev, ...files]);
       } else {
         toast({
           title: "Invalid file type",
-          description: "Only JPEG, PNG, and WebP images are allowed.",
+          description: "Please upload an image screenshot (JPEG, PNG, WebP, HEIC).",
           variant: "destructive"
         });
       }
@@ -432,10 +439,16 @@ export function DashboardClient({ user }: DashboardClientProps) {
   // Handle File Selection
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const files = Array.from(e.target.files).filter(file => 
-        ["image/jpeg", "image/png", "image/webp"].includes(file.type)
-      );
-      setUploadFiles(prev => [...prev, ...files]);
+      const files = Array.from(e.target.files).filter(isImageFile);
+      if (files.length > 0) {
+        setUploadFiles(prev => [...prev, ...files]);
+      } else {
+        toast({
+          title: "Invalid file type",
+          description: "Please upload image screenshots.",
+          variant: "destructive"
+        });
+      }
     }
   };
 
@@ -449,12 +462,19 @@ export function DashboardClient({ user }: DashboardClientProps) {
     if (uploadFiles.length === 0) return;
     
     setUploading(true);
-    const formData = new FormData();
-    uploadFiles.forEach(file => {
-      formData.append("images", file);
-    });
 
     try {
+      // Optimize and downscale large phone screenshots before upload
+      // Prevents Vercel 4.5MB payload limit and mobile upload timeouts
+      const optimizedFiles = await Promise.all(
+        uploadFiles.map(file => optimizeScreenshot(file))
+      );
+
+      const formData = new FormData();
+      optimizedFiles.forEach(file => {
+        formData.append("images", file);
+      });
+
       const res = await fetch("/api/upload", {
         method: "POST",
         body: formData,
@@ -464,7 +484,7 @@ export function DashboardClient({ user }: DashboardClientProps) {
       if (res.ok && data.success) {
         toast({
           title: "Upload Successful",
-          description: `${uploadFiles.length} image(s) queued for AI extraction!`,
+          description: `${uploadFiles.length} screenshot(s) queued for AI extraction!`,
         });
         setUploadFiles([]);
         setActiveTab("jobs");
@@ -479,7 +499,7 @@ export function DashboardClient({ user }: DashboardClientProps) {
     } catch (error) {
       toast({
         title: "Error",
-        description: "An unexpected error occurred during upload.",
+        description: "An unexpected error occurred during upload. Please try again.",
         variant: "destructive"
       });
     } finally {
@@ -952,7 +972,7 @@ export function DashboardClient({ user }: DashboardClientProps) {
                     type="file"
                     id="file-upload"
                     multiple
-                    accept="image/jpeg,image/png,image/webp"
+                    accept="image/*"
                     className="hidden"
                     onChange={handleFileChange}
                   />
@@ -964,7 +984,7 @@ export function DashboardClient({ user }: DashboardClientProps) {
                       Click to upload or drag and drop
                     </span>
                     <span className="text-xs text-slate-500 mt-1">
-                      Supports JPEG, PNG, WebP screenshots (Full tables supported)
+                      Supports all mobile screenshots & photos (JPEG, PNG, WebP, HEIC)
                     </span>
                   </label>
                 </div>

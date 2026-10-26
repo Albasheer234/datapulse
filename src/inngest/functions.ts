@@ -240,9 +240,30 @@ export const processImageBatch = inngest.createFunction(
     let processedCount = 0;
     let failedCount = 0;
 
+    // Fetch images from database if not passed in event payload (protects against Inngest 512KB payload limit)
+    let images: string[] = imageUrls || [];
+    if (!images || images.length === 0) {
+      const jobRecord = await step.run("fetch-job-images", async () => {
+        const jobs = await db
+          .select()
+          .from(processingJobs)
+          .where(eq(processingJobs.id, jobId))
+          .limit(1);
+        return jobs[0] || null;
+      });
+
+      if (jobRecord && jobRecord.imageUrls) {
+        try {
+          images = JSON.parse(jobRecord.imageUrls);
+        } catch {
+          images = [];
+        }
+      }
+    }
+
     // Process each image
-    for (let i = 0; i < imageUrls.length; i++) {
-      const imageUrl = imageUrls[i];
+    for (let i = 0; i < images.length; i++) {
+      const imageUrl = images[i];
 
       const result = await step.run(
         `process-image-${i}`,
@@ -354,7 +375,7 @@ export const processImageBatch = inngest.createFunction(
         });
 
         // Gentle spacing between images in batch to prevent burst rate limits
-        if (i < imageUrls.length - 1) {
+        if (i < images.length - 1) {
           await step.sleep(`pause-before-next-${i}`, "1.5s");
         }
       }
